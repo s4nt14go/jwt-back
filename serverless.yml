@@ -52,6 +52,19 @@ functions:
   authorizer:
     handler: functions/authorizer.authorizer
 
+  create-account:
+    handler: functions/create-account.create
+    events:
+      - http:
+          path: create-account
+          method: post
+    environment:
+      TABLE: !Ref Table
+    iamRoleStatements:
+      - Effect: Allow
+        Action: dynamodb:PutItem
+        Resource: !GetAtt Table.Arn
+
 resources:
   Resources:
 
