@@ -7,6 +7,7 @@ plugins:
   - serverless-bundle # Package our functions with Webpack
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
+  - serverless-pseudo-parameters
 
 provider:
   name: aws
@@ -14,6 +15,15 @@ provider:
   stage: dev
   region: eu-central-1
   logRetentionInDays: 30
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  authorizer:
+    arn: arn:aws:lambda:#{AWS::Region}:#{AWS::AccountId}:function:${self:service}-${self:custom.stage}-authorizer
+    resultTtlInSeconds: 0
+    identitySource: method.request.header.Authorization
+    identityValidationExpression: '^Bearer [-0-9a-zA-z\.]*$'
+    type: token
 
 functions:
 
@@ -23,3 +33,14 @@ functions:
       - http:
           path: get-token
           method: post
+
+  read-account:
+    handler: functions/read-account.read
+    events:
+      - http:
+          path: read-account
+          method: get
+          authorizer: ${self:custom.authorizer}
+
+  authorizer:
+    handler: functions/authorizer.authorizer
