@@ -8,6 +8,7 @@ plugins:
   - serverless-offline
   - serverless-dotenv-plugin # Load .env as environment variables
   - serverless-pseudo-parameters
+  - serverless-iam-roles-per-function
 
 provider:
   name: aws
@@ -41,12 +42,29 @@ functions:
           path: read-account
           method: get
           authorizer: ${self:custom.authorizer}
+    environment:
+      TABLE: !Ref Table
+    iamRoleStatements:
+      - Effect: Allow
+        Action: dynamodb:Query
+        Resource: !GetAtt Table.Arn
 
   authorizer:
     handler: functions/authorizer.authorizer
 
 resources:
   Resources:
+
+    Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: account
+            KeyType: HASH
+        AttributeDefinitions:
+          - AttributeName: account
+            AttributeType: S
 
     GatewayResponseDefault4XX:
       Type: 'AWS::ApiGateway::GatewayResponse'
