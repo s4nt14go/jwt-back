@@ -65,6 +65,20 @@ functions:
         Action: dynamodb:PutItem
         Resource: !GetAtt Table.Arn
 
+  update-account:
+    handler: functions/update-account.update
+    events:
+      - http:
+          path: update-account
+          method: post
+          authorizer: ${self:custom.authorizer}
+    environment:
+      TABLE: !Ref Table
+    iamRoleStatements:
+      - Effect: Allow
+        Action: dynamodb:UpdateItem
+        Resource: !GetAtt Table.Arn
+
 resources:
   Resources:
 
