@@ -9,6 +9,7 @@ plugins:
   - serverless-dotenv-plugin # Load .env as environment variables
   - serverless-pseudo-parameters
   - serverless-iam-roles-per-function
+  - serverless-export-env
 
 provider:
   name: aws
@@ -42,6 +43,7 @@ functions:
           path: read-account
           method: get
           authorizer: ${self:custom.authorizer}
+          cors: true
     environment:
       TABLE: !Ref Table
     iamRoleStatements:
@@ -72,6 +74,7 @@ functions:
           path: update-account
           method: post
           authorizer: ${self:custom.authorizer}
+          cors: true
     environment:
       TABLE: !Ref Table
     iamRoleStatements:
@@ -111,3 +114,13 @@ resources:
         ResponseType: DEFAULT_5XX
         RestApiId:
           Ref: 'ApiGatewayRestApi'
+
+  Outputs:
+
+    ApiUrl:
+      Value:
+        !Join
+        - ''
+        - - 'https://'
+          - !Ref ApiGatewayRestApi
+          - '.execute-api.${opt:region, self:provider.region}.amazonaws.com/${self:custom.stage}'
