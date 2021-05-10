@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "e2e": "jest --verbose ./__tests__/e2e",
+    "test": "jest --verbose ./__tests__/unit",
     "exportEnv": "sls export-env"
   },
   "author": "",
@@ -15,6 +16,7 @@
     "url": "https://github.com/AnomalyInnovations/serverless-typescript-starter.git"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.13.0",
     "@types/aws-lambda": "^8.10.64",
     "@types/chance": "^1.1.1",
     "@types/jest": "^26.0.14",
