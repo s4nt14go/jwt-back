@@ -52,4 +52,4 @@ jobs:
           export AWS_SESSION_TOKEN=`echo $CREDS | jq -r '.Credentials.SessionToken'`
 
           npm run exportEnv
-          npm run e2e-test
+          npm run e2e
