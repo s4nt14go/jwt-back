@@ -35,6 +35,10 @@ functions:
       - http:
           path: get-token
           method: post
+    iamRoleStatements:
+      - Effect: Allow
+        Action: ssm:GetParameters
+        Resource: arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:service}/${self:custom.stage}/*
 
   read-account:
     handler: functions/read-account.read
@@ -53,6 +57,10 @@ functions:
 
   authorizer:
     handler: functions/authorizer.authorizer
+    iamRoleStatements:
+      - Effect: Allow
+        Action: ssm:GetParameters
+        Resource: arn:aws:ssm:#{AWS::Region}:#{AWS::AccountId}:parameter/${self:service}/${self:custom.stage}/*
 
   create-account:
     handler: functions/create-account.create

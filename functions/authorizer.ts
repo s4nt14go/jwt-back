@@ -1,6 +1,7 @@
 import njwt from 'njwt';
+import { SSM } from 'aws-sdk';
 
-const { SECRET } = process.env;
+const ssm = new SSM();
 
 function getToken(event) {
 
@@ -25,6 +26,13 @@ function getToken(event) {
 
 export const authorizer = async event => {
   console.log('event:', JSON.stringify(event, null, 2));
+
+  const stage = event.methodArn.split('/')[1];
+  const Names = [
+    `/jwt/${stage}/SECRET`,
+  ]
+  const request = await ssm.getParameters({ Names }).promise();
+  const SECRET = request.Parameters.filter(p => p.Name === Names[0])[0].Value;
 
   try {
     const token = getToken(event);

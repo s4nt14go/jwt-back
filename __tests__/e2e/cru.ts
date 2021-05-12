@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { Chance } from 'chance';
 import { load } from 'ts-dotenv';
-import njwt from 'njwt';
 import retry from 'async-retry';
 import * as DynamoDB from 'aws-sdk/clients/dynamodb';
 const DocumentClient = new DynamoDB.DocumentClient();
@@ -10,13 +9,10 @@ const chance = Chance();
 
 const env = load({
   API_URL: String,
-  SECRET: String,
-  ISSUER: String,
   TABLE: String,
 });
 
-const API = env.API_URL;
-const { SECRET, ISSUER, TABLE } = env;
+const { API_URL, TABLE } = env;
 
 describe('When we created an account and get a token', () => {
 
@@ -27,7 +23,7 @@ describe('When we created an account and get a token', () => {
 
     await axios({
       method: 'post',
-      url: `${API}/create-account`,
+      url: `${API_URL}/create-account`,
       data: JSON.stringify({
         account,
       }),
@@ -35,7 +31,7 @@ describe('When we created an account and get a token', () => {
 
     const { data } = await axios({
       method: 'post',
-      url: `${API}/get-token`,
+      url: `${API_URL}/get-token`,
       data: JSON.stringify({
         account,
       })
@@ -44,23 +40,13 @@ describe('When we created an account and get a token', () => {
     token = data;
   })
 
-  it(`is valid and the has correct sub and iss fields`, async () => {
-    const data = njwt.verify(token, SECRET);
-    expect(data.body).toEqual(
-      expect.objectContaining({
-        sub: account,
-        iss: ISSUER,
-      }),
-    )
-  });
-
   it(`updates account and read back updated values`, async () => {
 
     const country = chance.country({ full: true });
 
     await axios( {
       method: 'post',
-      url: `${API}/update-account`,
+      url: `${API_URL}/update-account`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -73,7 +59,7 @@ describe('When we created an account and get a token', () => {
     await retry(async () => {
       const read = await axios({
         method: 'get',
-        url: `${API}/read-account`,
+        url: `${API_URL}/read-account`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -94,7 +80,7 @@ describe('When we created an account and get a token', () => {
     try {
       await axios({
         method: 'get',
-        url: `${API}/read-account`,
+        url: `${API_URL}/read-account`,
       });
       throw new Error(`Throw error in case previous get doesn't error, so we force expect is always assessed in catch block`);
     } catch (e) {
@@ -108,7 +94,7 @@ describe('When we created an account and get a token', () => {
 
       await axios( {
         method: 'post',
-        url: `${API}/update-account`,
+        url: `${API_URL}/update-account`,
         data: JSON.stringify({
           country,
         }),
