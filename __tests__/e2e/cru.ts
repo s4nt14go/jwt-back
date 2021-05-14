@@ -55,8 +55,7 @@ describe('When we created an account and get a token', () => {
       }),
     });
 
-    let retryNumber = 0;
-    await retry(async () => {
+    await retry(async (bail, attempt) => {
       const read = await axios({
         method: 'get',
         url: `${API_URL}/read-account`,
@@ -68,11 +67,9 @@ describe('When we created an account and get a token', () => {
       expect(read.data).toEqual(expect.objectContaining({
         country,
       }));
-      retryNumber++;
-      console.log(`updates retryNumber: ${retryNumber}`);
+      console.log(`updates attempt: ${attempt}`);
     }, {
       retries: 2,
-      maxTimeout: 1000
     })
   });
 
