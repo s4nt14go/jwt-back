@@ -17,7 +17,7 @@ export const create: APIGatewayProxyHandler = wrapper(async (event: APIGatewayEv
   await DocumentClient.put({
     TableName: TABLE,
     Item,
-    ConditionExpression: 'attribute_not_exists(account)',
+    // ConditionExpression: 'attribute_not_exists(account)',  // Uncomment this if you don't want to allow overwriting accounts
   }).promise();
 
   return `Account ${account} successfully created`;
