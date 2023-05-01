@@ -6,8 +6,9 @@
   "type": "module",
   "scripts": {
     "e2e": "jest --verbose ./__tests__/e2e",
-    "test": "jest --verbose ./__tests__/unit",
     "exportEnv": "sls export-env",
+    "deploy": "sls deploy --verbose",
+    "deploy:prod": "sls deploy -s prod --verbose",
     "sls": "sls"
   },
   "author": "",
