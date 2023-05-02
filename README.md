@@ -64,7 +64,6 @@ CI/CD:
     One way to do the first deployment it's commenting out `authorizer` in `functions > read-account & update-account > events > http` in `serverless.yml`, deploying, then uncommenting them, and you're all set to start deploy normally.
 
     ```shell script
-    npm ci
     # deploy on dev stage
     npm run deploy
     # deploy on prod stage
