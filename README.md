@@ -23,7 +23,7 @@ For example, for `dev` stage, you'll need to create the parameters with names `/
 
 Check what you get when reading or updating the account data while checking/unchecking "Include token in Authorization Header" option.
 
-### Techs used in this backend
+### Techs used in this backend 
 * Serverless Framework
 * Node, TypeScript
 * Jest
